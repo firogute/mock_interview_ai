@@ -18,9 +18,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning={true}>
       <body className={`${monaSans.className} antialiased pattern`}>
         {children}
+        <p>asdfhaskjdfasdfh </p>
       </body>
     </html>
   );

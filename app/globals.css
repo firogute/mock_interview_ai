@@ -302,9 +302,9 @@
   @apply bg-gradient-to-b from-[#4B4D4F] to-[#4B4D4F33];
 }
 
-@utility pattern {
+/* @utility pattern {
   @apply bg-[url('/pattern.png')] bg-top bg-no-repeat;
-}
+} */
 
 @utility blue-gradient-dark {
   @apply bg-gradient-to-b from-[#171532] to-[#08090D];
@@ -320,6 +320,15 @@
 
 @utility animate-fadeIn {
   animation: fadeIn 0.3s ease-in-out;
+}
+
+@layer utilities {
+  .pattern {
+    background-image: url("/pattern.png");
+    background-position: top;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
 }
 
 @keyframes fadeIn {
