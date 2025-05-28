@@ -7,12 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import Image from "next/image";
 import Link from "next/link";
-import { email } from "zod/v4";
 import { toast } from "sonner";
-
-const formSchema = z.object({
-  username: z.string().min(2).max(50),
-});
+import FormField from "./FormField";
+import { useRouter } from "next/navigation";
 
 const authFormSchema = (type: FormType) => {
   return z.object({
@@ -24,6 +21,7 @@ const authFormSchema = (type: FormType) => {
 };
 
 const AuthForm = ({ type }: { type: FormType }) => {
+  const router = useRouter();
   const formSchema = authFormSchema(type);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -39,9 +37,11 @@ const AuthForm = ({ type }: { type: FormType }) => {
   function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       if (type === "sign-up") {
-        console.log("Sign up", values);
+        toast.success("Sign up successful! Please sign in.");
+        router.push("/sign-in");
       } else {
-        console.log("sign up", values);
+        toast.success("Sign in successful!");
+        router.push("/");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -66,7 +66,28 @@ const AuthForm = ({ type }: { type: FormType }) => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="w-full space-y-6 mt-4 form"
           >
-            {isSignIn ? <p>Name</p> : <p>ohh fuck</p>}
+            {!isSignIn && (
+              <FormField
+                control={form.control}
+                name="name"
+                label="Name"
+                placeholder="Your name"
+              />
+            )}
+            <FormField
+              control={form.control}
+              name="email"
+              label="Email"
+              placeholder="Your Email Address"
+              type="email"
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              label="Password"
+              placeholder="Enter your password"
+              type="password"
+            />
             <Button type="submit" className="btn">
               {isSignIn ? "Sign in" : "Create an Account"}
             </Button>
