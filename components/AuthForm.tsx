@@ -10,6 +10,13 @@ import Link from "next/link";
 import { toast } from "sonner";
 import FormField from "./FormField";
 import { useRouter } from "next/navigation";
+import { auth } from "@/firebase/client";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { signIn, signUp } from "@/lib/actions/auth.action";
+import { sign } from "crypto";
 
 const authFormSchema = (type: FormType) => {
   return z.object({
@@ -34,12 +41,52 @@ const AuthForm = ({ type }: { type: FormType }) => {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
       if (type === "sign-up") {
+        const { name, email, password } = values;
+
+        const userCredentials = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        const result = await signUp({
+          uid: userCredentials.user.uid,
+          email,
+          name: name!,
+          password,
+        });
+
+        if (!result?.success) {
+          toast.error(result?.message || "Sign up failed. Please try again.");
+          return;
+        }
+
         toast.success("Sign up successful! Please sign in.");
         router.push("/sign-in");
       } else {
+        const { email, password } = values;
+
+        const userCredentials = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+        const idToken = await userCredentials.user.getIdToken();
+
+        if (!idToken) {
+          toast.error("Failed to retrieve ID token. Please try again.");
+          return;
+        }
+
+        await signIn({
+          email,
+          idToken,
+        });
+
         toast.success("Sign in successful!");
         router.push("/");
       }

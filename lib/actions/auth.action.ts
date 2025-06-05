@@ -1,3 +1,5 @@
+"use server";
+
 import { Path } from "react-hook-form";
 import { auth, db } from "@/firebase/admin";
 import { error } from "console";
@@ -6,7 +8,7 @@ import { cookies } from "next/headers";
 const ONE_WEEK = 60 * 60 * 24 * 7 * 1000;
 
 export async function signUp(params: SignUpParams) {
-  const { uid, email, password } = params;
+  const { uid, email, password, name } = params;
   try {
     const userRecord = await db.collection("users").doc(uid).get();
     if (userRecord.exists) {
@@ -20,6 +22,11 @@ export async function signUp(params: SignUpParams) {
       name,
       email,
     });
+
+    return {
+      success: true,
+      message: "Sign up successful! Please sign in.",
+    };
   } catch (e: any) {
     console.error("Error signing up:", e);
     if (e.code === "auth/email-already-exists") {
