@@ -1,20 +1,17 @@
 "use server";
-
-import { Path } from "react-hook-form";
 import { auth, db } from "@/firebase/admin";
-import { error } from "console";
 import { cookies } from "next/headers";
 
 const ONE_WEEK = 60 * 60 * 24 * 7 * 1000;
 
 export async function signUp(params: SignUpParams) {
-  const { uid, email, password, name } = params;
+  const { uid, email,  name } = params;
   try {
     const userRecord = await db.collection("users").doc(uid).get();
     if (userRecord.exists) {
       return {
         success: false,
-        message: "User already exists with this email.",
+        message: "User already exists with this email. please sign in",
       };
     }
 
@@ -43,6 +40,23 @@ export async function signUp(params: SignUpParams) {
   }
 }
 
+export async function setSessionCookie(idToken: string) {
+  const cookieStore = await cookies();
+
+  const sessionCookie = await auth.createSessionCookie(idToken, {
+    expiresIn: ONE_WEEK,
+  });
+
+  cookieStore.set("session", sessionCookie, {
+    maxAge: ONE_WEEK,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    sameSite: "lax",
+  });
+}
+
+
 export async function signIn(params: SignInParams) {
   const { email, idToken } = params;
 
@@ -70,18 +84,3 @@ export async function signIn(params: SignInParams) {
   }
 }
 
-export async function setSessionCookie(idToken: string) {
-  const cookieStore = await cookies();
-
-  const sessionCookie = await auth.createSessionCookie(idToken, {
-    expiresIn: ONE_WEEK,
-  });
-
-  cookieStore.set("session", sessionCookie, {
-    maxAge: ONE_WEEK,
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    path: "/",
-    sameSite: "lax",
-  });
-}
