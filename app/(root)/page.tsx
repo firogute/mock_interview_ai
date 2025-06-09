@@ -5,7 +5,8 @@ import React from "react";
 import { dummyInterviews } from "@/constants";
 import { Inter } from "next/font/google";
 import InterviewCard from "@/components/InterviewCard";
-import { getCurrentUser, getInterviewByUserId, getLatestInterviews } from "@/lib/actions/auth.action";
+import { getCurrentUser } from "@/lib/actions/auth.action";
+import {getInterviewByUserId, getLatestInterviews} from "@/lib/actions/general.action"
 
 const page = async () => {
   const user = await getCurrentUser()

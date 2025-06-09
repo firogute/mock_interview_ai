@@ -96,8 +96,6 @@ export async function getCurrentUser(): Promise<User | null> {
     if (!userRecord.exists) {
       return null;
     }
-
-    console.log(userRecord.id);
     return {
       ...userRecord.data(),
       id: userRecord.id,
