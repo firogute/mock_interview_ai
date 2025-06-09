@@ -119,11 +119,11 @@ export async function createFeedback(params: CreateFeedbackParams) {
 export async function getFeedbackByInterviewId(
   params: GetFeedbackByInterviewIdParams
 ): Promise<Feedback | null> {
-  const { interviewId, userId } = params;
+  const { interviewId, userID } = params;
   const feedback = await db
     .collection("feedback")
     .where("interviewId", "==", interviewId)
-    .where("userId", "==", userId)
+    .where("userId", "==", userID)
     .limit(1)
     .get();
 

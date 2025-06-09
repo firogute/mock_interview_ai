@@ -65,8 +65,6 @@ const Agent = ({
   }, []);
 
   const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-    console.log("Generate Feedback Here");
-
     // Creating a server action that generates feedback
 
     const { success, feedbackId: id } = await createFeedback({

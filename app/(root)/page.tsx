@@ -6,12 +6,18 @@ import { dummyInterviews } from "@/constants";
 import { Inter } from "next/font/google";
 import InterviewCard from "@/components/InterviewCard";
 import { getCurrentUser } from "@/lib/actions/auth.action";
-import {getInterviewByUserId, getLatestInterviews} from "@/lib/actions/general.action"
+import {
+  getInterviewByUserId,
+  getLatestInterviews,
+} from "@/lib/actions/general.action";
 
 const page = async () => {
-  const user = await getCurrentUser()
+  const user = await getCurrentUser();
 
-  const [userInterviews,latestInterviews] = await Promise.all([await getInterviewByUserId(user?.id!),await getLatestInterviews({userId: user?.id})])
+  const [userInterviews, latestInterviews] = await Promise.all([
+    await getInterviewByUserId(user?.id!),
+    await getLatestInterviews({ userId: user?.id }),
+  ]);
   const hasPastInterviews = userInterviews?.length > 0;
 
   const hasUpcomingInterviews = latestInterviews?.length > 0;
@@ -52,9 +58,9 @@ const page = async () => {
         <h2>Take an Interview</h2>
         <div className="interviews-section">
           {hasUpcomingInterviews ? (
-            latestInterviews?.map((interview) => (
-              <InterviewCard key={interview.id} {...interview} />
-            ))
+            latestInterviews?.map((interview) => {
+              return <InterviewCard key={interview.id} {...interview} />;
+            })
           ) : (
             <p>There are no new interviews.</p>
           )}

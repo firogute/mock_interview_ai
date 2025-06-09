@@ -5,16 +5,20 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import DisplayTechIcons from "./DisplayTechIcons";
+import { getFeedbackByInterviewId } from "@/lib/actions/general.action";
 
-const InterviewCard = ({
+const InterviewCard = async ({
   id,
-  userId,
+  userID,
   role,
   type,
   techstack,
   createdAt,
 }: InterviewCardProps) => {
-  const feedback = null as Feedback | null;
+  const feedback =
+    userID && id
+      ? await getFeedbackByInterviewId({ interviewId: id, userID })
+      : null;
   const normalizedType = /mix/gi.test(type) ? "mixed" : type;
   const formattedDate = daysjs(
     feedback?.createdAt || createdAt || Date.now()

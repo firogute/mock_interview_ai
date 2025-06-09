@@ -20,7 +20,7 @@ const page = async ({ params }: RouteParams) => {
 
   const feedback = await getFeedbackByInterviewId({
     interviewId: id,
-    userId: user?.id!,
+    userID: user?.id!,
   });
 
   return (
